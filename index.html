@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0d10">
+  <title>Expansion Card Categories</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#0b0d10;color:#e8eaed;font-family:Arial,Helvetica,sans-serif}button,input{font:inherit}
+    :root{--bg:#0b0d10;--panel:#111419;--panel2:#161a20;--line:#272c34;--muted:#8d96a3;--text:#e8eaed;--accent:#d9dde3}
+    .page{display:grid;grid-template-columns:285px minmax(0,1fr);min-height:100vh}
+    aside{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:#0e1115;padding:18px;overflow:auto}
+    .brand{font-weight:800;font-size:18px}.sub{color:var(--muted);font-size:11px;margin-top:4px;line-height:1.4}
+    .builder-title{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#9aa3af;margin:24px 0 9px}
+    .slot{width:100%;display:flex;gap:9px;align-items:center;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:8px;margin-bottom:7px;color:var(--text);cursor:pointer}
+    .slot.active{border-color:#7d8794}.slot img,.aura-slot img{width:42px;height:42px;object-fit:cover;border-radius:6px;background:#20242a;flex:0 0 auto}.slot .empty,.aura-slot .empty{width:42px;height:42px;border:1px dashed #39404a;border-radius:6px;display:grid;place-items:center;color:#59616c;flex:0 0 auto}.slot b,.aura-slot b{font-size:11px;display:block}.slot small,.aura-slot small{font-size:9px;color:var(--muted);display:block;margin-top:3px}
+    .aura-slot{display:flex;gap:9px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:8px;margin-bottom:7px;min-height:60px}.clear{border:0;background:transparent;color:#737d89;cursor:pointer;font-size:10px;margin-left:auto;padding:5px}.clear:hover{color:#fff}
+    .builder-help{color:#68717d;font-size:9px;line-height:1.5;margin-top:11px}
+    main{min-width:0;padding:22px 24px 50px}.top{display:flex;gap:12px;align-items:end;justify-content:space-between;margin-bottom:14px}.top h1{font-size:22px;margin:0}.count{color:var(--muted);font-size:10px;margin-top:5px}
+    .search{width:min(340px,45vw);background:#111419;border:1px solid var(--line);border-radius:8px;color:white;padding:9px 11px;outline:none}.search:focus{border-color:#59636f}
+    .categories{display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px}.categories button{border:1px solid var(--line);background:#111419;color:#9da6b2;border-radius:8px;padding:8px 11px;font-size:10px;cursor:pointer}.categories button:hover{color:#fff;border-color:#49515c}.categories button.on{background:#e2e5e9;color:#111418;border-color:#e2e5e9;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:9px}.card{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;background:#111419;border:1px solid var(--line);border-radius:10px;padding:9px;cursor:pointer;min-height:94px}.card:hover{border-color:#454d58;background:#14181e}.card img{width:58px;height:58px;object-fit:cover;border-radius:7px;background:#20242a}.card h3{font-size:11px;margin:1px 0 4px}.ability{font-size:9px;color:#c6ccd3;font-weight:700;margin-bottom:3px}.desc{font-size:9px;line-height:1.42;color:#8f98a5}.tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}.tag{font-size:7px;color:#747e8b;border:1px solid #292f38;border-radius:999px;padding:2px 5px}.rarity{font-size:8px;color:#606975;margin-top:5px}.empty-view{color:#7d8793;text-align:center;padding:60px 20px;border:1px dashed var(--line);border-radius:10px}
+    .aura-card{grid-template-columns:58px minmax(0,1fr)}.aura-type{font-size:8px;text-transform:uppercase;color:#8e98a5;margin-top:4px}
+    .load{padding:70px 20px;text-align:center;color:#7e8792}.error{max-width:650px;margin:80px auto;border:1px solid #5d3535;background:#1a1111;padding:18px;border-radius:10px;color:#e3bcbc}
+    @media(max-width:800px){.page{display:block}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:18px 14px 40px}.top{align-items:start;flex-direction:column}.search{width:100%}.grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:540px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="app"><div class="load">Loading cards…</div></div>
+<script>
+(() => {
+  const DATA='https://raw.githubusercontent.com/DaddyDrag0/CardRngExpansionDepths/main/src/data/';
+  const CATEGORIES=['All','Speedrun / AOE','Support','Attack','SUPER GOOD Attack','SUPER GOOD Support','Cheese','Aura Cards'];
+
+  // Easy manual refinement area. Add/remove names here later as the community fine-tunes categories.
+  const MANUAL={
+    'SUPER GOOD Attack':new Set([
+      'Malik The Sovereign','Shuten-dōji','Chronus The Hoarder','Raze The Destroyer','Bakunawa','Behemoth','Hell\'s Army','Cave Goblin God','Azure Witch','Eonus','Fate Seamstress','Storm Leviathan','Abyssal Nightmare','Neptune'
+    ]),
+    'SUPER GOOD Support':new Set([
+      'Buddha','Hades','Fuxi','Pandora','Nüwa','Serket','Eclipseborn Luminant','Aphrodite','Three-Legged Golden Crow','Orc King','Snow Mage','Longmu'
+    ]),
+    'Cheese':new Set([
+      'Pandora','Zombie Dragon','Anubis','Hades','Buddha','The Grinch','Kira','Fate Seamstress','Eclipseborn Luminant','Noveau Riche'
+    ]),
+    'Speedrun / AOE':new Set([
+      'Fuxi','Behemoth','Academy Student','Cave Goblin God','Fate Seamstress'
+    ])
+  };
+
+  const app=document.getElementById('app');
+  const state={cards:[],abilities:{},auras:[],category:'All',search:'',team:[null,null,null,null],activeSlot:0,statAura:null,skillAura:null};
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const img=id=>id?`https://www.roblox.com/asset-thumbnail/image?assetId=${encodeURIComponent(id)}&width=420&height=420&format=png`:'';
+  const fmt=n=>Number(n||0).toLocaleString('en-US');
+  const textFor=c=>`${c.ability||''} ${state.abilities[c.ability]||''}`.toLowerCase();
+
+  function categoriesFor(card){
+    const t=textFor(card),out=new Set();
+    const attack=/(deal|damage|attack|attacks|kill|defeat|steal .*atk|steal .*stat|reduce .*hp|loses .*hp|poison|burn|bleed|current hp|maximum hp|max hp|meteor|strike|claw|dagger|doom|assassinate)/i.test(t);
+    const support=/(all(?:ied)? cards|allies|ally|party|next card|next ally|revive|heal|recover|shield|protect|boost all|boost .*ally|give .*ally|adds? .*next|field effect: boost|immune|immunity)/i.test(t);
+    const aoe=/(all enemies|every enemy|each enemy|enemy team|all cards|attack all|attacks all|each opponent|multiple enemies|first 2 enemies|linked|splash|each enemy loses|attacks? on entry|attack again|extra turn|take \d+ turns|attacks? \d+ times|\dx attacks)/i.test(t);
+    const cheese=/(instant|kill based|will kill|die after|both active cards die|revive|survive|cannot die|must be defeated|dodge|evade|stun|confus|skip opponent|skip .*turn|steal .*ability|gain .*abilit|copy .*abilit|remove .*abilit|abilities do not|ability.*fail|transform|switch places|reflect|paradox|undying|unholy|death|doom|perish|book of death|hex|seal)/i.test(t);
+    if(aoe)out.add('Speedrun / AOE');
+    if(support)out.add('Support');
+    if(attack)out.add('Attack');
+    if(cheese)out.add('Cheese');
+
+    // First-pass strength estimate: intentionally generous; manual lists above take priority.
+    if(attack && (card.rarity>=500000000 || card.statMultiplier>=4) && /(2x|3x|4x|5x|8 times|kill|steal|all enemies|attack again|extra turn|max hp|current hp|doom|death)/i.test(t)) out.add('SUPER GOOD Attack');
+    if(support && card.rarity>=100000000 && /(revive|allies|all cards|shield|heal|boost|immune|evasion|next ally|ability)/i.test(t)) out.add('SUPER GOOD Support');
+
+    for(const [cat,names] of Object.entries(MANUAL))if(names.has(card.name))out.add(cat);
+    return [...out];
+  }
+
+  function portrait(item,empty='+'){
+    if(!item)return `<span class="empty">${empty}</span>`;
+    return `<img src="${img(item.imageAssetId)}" alt="" loading="lazy">`;
+  }
+
+  function builder(){
+    return `<aside>
+      <div class="brand">Expansion Categories</div>
+      <div class="sub">Card categories and team reference.</div>
+      <div class="builder-title">Team</div>
+      ${state.team.map((c,i)=>`<button class="slot ${state.activeSlot===i?'active':''}" data-slot="${i}">${portrait(c)}<span>${c?`<b>${esc(c.name)}</b><small>${esc(c.ability||'No ability')}</small>`:`<b>Card ${i+1}</b><small>Click a card to add it</small>`}</span>${c?`<span class="clear" data-clear-slot="${i}">Clear</span>`:''}</button>`).join('')}
+      <div class="builder-title">Aura Cards</div>
+      <div class="aura-slot">${portrait(state.statAura)}<span>${state.statAura?`<b>${esc(state.statAura.name)}</b><small>Stat Aura · ${esc(state.statAura.skillName||'')}</small>`:`<b>Stat Aura</b><small>Select one from Aura Cards</small>`}</span>${state.statAura?'<button class="clear" data-clear-aura="stat">Clear</button>':''}</div>
+      <div class="aura-slot">${portrait(state.skillAura)}<span>${state.skillAura?`<b>${esc(state.skillAura.name)}</b><small>Ability Aura · ${esc(state.skillAura.skillName||'')}</small>`:`<b>Ability Aura</b><small>Select one from Aura Cards</small>`}</span>${state.skillAura?'<button class="clear" data-clear-aura="skill">Clear</button>':''}</div>
+      <div class="builder-help">Select a team slot, then click a card. Aura cards automatically go into the correct aura slot.</div>
+    </aside>`;
+  }
+
+  function cardHtml(card){
+    const cats=categoriesFor(card),desc=state.abilities[card.ability]||'No ability description.';
+    return `<article class="card" data-card="${esc(card.name)}">
+      <img src="${img(card.imageAssetId)}" alt="" loading="lazy">
+      <div><h3>${esc(card.name)}</h3><div class="ability">${esc(card.ability||'No Ability')}</div><div class="desc">${esc(desc)}</div><div class="tags">${cats.map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div><div class="rarity">1 / ${fmt(card.rarity)}</div></div>
+    </article>`;
+  }
+
+  function auraHtml(aura){
+    return `<article class="card aura-card" data-aura="${esc(aura.name)}"><img src="${img(aura.imageAssetId)}" alt="" loading="lazy"><div><h3>${esc(aura.name)}</h3><div class="ability">${esc(aura.skillName||'')}</div><div class="desc">${esc(aura.description||'')}</div><div class="aura-type">${esc(aura.type||'Aura')} Aura</div><div class="rarity">1 / ${fmt(aura.rarity)}</div></div></article>`;
+  }
+
+  function currentItems(){
+    const q=state.search.trim().toLowerCase();
+    if(state.category==='Aura Cards')return state.auras.filter(a=>!a.unobtainable).filter(a=>!q||`${a.name} ${a.skillName||''} ${a.description||''}`.toLowerCase().includes(q));
+    return state.cards.filter(c=>!c.unobtainable).filter(c=>state.category==='All'||categoriesFor(c).includes(state.category)).filter(c=>!q||`${c.name} ${c.ability||''} ${state.abilities[c.ability]||''}`.toLowerCase().includes(q));
+  }
+
+  function render(){
+    const items=currentItems();
+    app.innerHTML=`<div class="page">${builder()}<main><div class="top"><div><h1>${esc(state.category)}</h1><div class="count">${items.length} ${state.category==='Aura Cards'?'auras':'cards'}</div></div><input id="search" class="search" placeholder="Search cards or abilities" value="${esc(state.search)}"></div><div class="categories">${CATEGORIES.map(c=>`<button class="${state.category===c?'on':''}" data-category="${esc(c)}">${esc(c)}</button>`).join('')}</div><section class="grid">${items.length?items.map(x=>state.category==='Aura Cards'?auraHtml(x):cardHtml(x)).join(''):'<div class="empty-view">No cards found.</div>'}</section></main></div>`;
+    bind();
+  }
+
+  function bind(){
+    document.querySelectorAll('[data-category]').forEach(b=>b.onclick=()=>{state.category=b.dataset.category;render()});
+    const search=document.getElementById('search');if(search)search.oninput=e=>{state.search=e.target.value;render()};
+    document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=e=>{if(e.target.closest('[data-clear-slot]'))return;state.activeSlot=Number(b.dataset.slot);render()});
+    document.querySelectorAll('[data-clear-slot]').forEach(b=>b.onclick=e=>{e.stopPropagation();state.team[Number(b.dataset.clearSlot)]=null;render()});
+    document.querySelectorAll('[data-clear-aura]').forEach(b=>b.onclick=()=>{if(b.dataset.clearAura==='stat')state.statAura=null;else state.skillAura=null;render()});
+    document.querySelectorAll('[data-card]').forEach(el=>el.onclick=()=>{const c=state.cards.find(x=>x.name===el.dataset.card);if(!c)return;state.team[state.activeSlot]=c;const next=state.team.findIndex((x,i)=>i>state.activeSlot&&!x);if(next>=0)state.activeSlot=next;render()});
+    document.querySelectorAll('[data-aura]').forEach(el=>el.onclick=()=>{const a=state.auras.find(x=>x.name===el.dataset.aura);if(!a)return;if(a.type==='Stat')state.statAura=a;else state.skillAura=a;render()});
+  }
+
+  async function load(){
+    try{
+      const cardReq=[1,2,3,4,5,6,7].map(i=>fetch(`${DATA}cards-${i}.json`).then(r=>{if(!r.ok)throw Error('Card data failed to load');return r.json()}));
+      const abilityReq=[1,2,3,4].map(i=>fetch(`${DATA}abilities-${i}.json`).then(r=>r.json()));
+      const auraReq=[1,2].map(i=>fetch(`${DATA}auras-${i}.json`).then(r=>r.json()));
+      const [cardSets,abilitySets,auraSets]=await Promise.all([Promise.all(cardReq),Promise.all(abilityReq),Promise.all(auraReq)]);
+      state.cards=cardSets.flat().sort((a,b)=>a.name.localeCompare(b.name));
+      state.abilities=Object.assign({},...abilitySets);
+      state.auras=auraSets.flat().sort((a,b)=>a.name.localeCompare(b.name));
+      render();
+    }catch(err){console.error(err);app.innerHTML=`<div class="error"><b>Could not load card data.</b><br><br>${esc(err.message)}</div>`}
+  }
+  load();
+})();
+</script>
+</body>
+</html>
