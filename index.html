@@ -26,10 +26,10 @@
   const DATA='https://raw.githubusercontent.com/DaddyDrag0/CardRngExpansionDepths/main/src/data/';
   const CATEGORIES=['All','Speedrun / AOE','Support','Attack','SUPER GOOD Attack','SUPER GOOD Support','Cheese','Aura Cards'];
   const SPEEDRUN_ABILITIES=new Set([
-    'Sacred Judgment','Railgun','Origin','Sudden Demise','Laser Gun','Horned Attack','Long Reach','Bind Fate','Decapitate','Insatiable','Haste','The World','Accelerate','Berserk','First Progenitor','Speedy Progression','Outshine','Stardust Driver','Quick Strike','First Blood','Fight Dirty','Deadly Ambush','Azure Dragon Wrath','Northern Winds','Heart Hunter','Stampede','Behavioral Therapy','Dagger Storm','Rapid Blows','Firepower','Chainsaw','Creep'
+    'Sacred Judgment','Railgun','Origin','Sudden Demise','Laser Gun','Horned Attack','Long Reach','Bind Fate','Decapitate','Insatiable','Haste','The World','Accelerate','Berserk','First Progenitor','Speedy Progression','Outshine','Stardust Driver','Quick Strike','First Blood','Fight Dirty','Deadly Ambush','Azure Dragon Wrath','Northern Winds','Heart Hunter','Stampede','Behavioral Therapy','Creep'
   ]);
   const SUPPORT_ABILITIES=new Set([
-    'Influence','Tonic','Art of War','Destiny Sight','Heart Legacy','Blessing','Happy Family','We Want YOU','Fusion... HA!','Perfect Sacrifice','Better Days','Housewife\'s Blessing','Eternal Devotion','Never Forgotten','Mother of Dragons','Safeguarding','Final Stand','Protection of Gods','Absolute Sovereignty','Lotus Sutra','Water Shield of Xuanwu','Naughty List','Three Gifts','Luminescent Veil','Creation and Restoration','Order of the Cosmos','Gehenna','Divine Barrier'
+    'Influence','Tonic','Art of War','Destiny Sight','Heart Legacy','Blessing','Happy Family','We Want YOU','Fusion... HA!','Perfect Sacrifice','Better Days','Housewife\'s Blessing','Eternal Devotion','Never Forgotten','Draconian','Mother of Dragons','Safeguarding','Final Stand','Protection of Gods','Absolute Sovereignty','Lotus Sutra','Water Shield of Xuanwu','Naughty List','Three Gifts','Luminescent Veil','Creation and Restoration','Order of the Cosmos','Gehenna','Aura Farm','Mr. Piccolo','Meow','Nightmare Melody','Creep'
   ]);
   const CHEESE=new Set(['Pandora','Judgment Day','Kira','Sleep Paralysis','Parallax','Hell\'s Army','The Hanged Man','River Dragon']);
   const SUPER_ATTACK=new Set([
@@ -72,7 +72,7 @@
     if(SUPER_ATTACK.has(card.name))out.add('SUPER GOOD Attack');
     if(SUPER_SUPPORT.has(card.name))out.add('SUPER GOOD Support');
     if(CHEESE.has(card.name))out.add('Cheese');
-    const offensive=/(deal|damage|attack|attacker|counter|steal|reduce enemy|lower enemy|enemy loses|opponent loses|poison|burn|bleed|freeze|frostbite|stun|confusion|double atk|gain .*atk|gain .*damage|boost damage|boost stats|increase damage|increase stats|kill|defeat|doom|death|assassinate|lifesteal|current hp|max hp|hit chance)/i.test(t);
+    const offensive=/(deal(?:s|ing)?[^.]*damage|attack(?:s|ing)? (?:the|enemy|again|on entry|twice|alongside)|attacker takes damage|counterattack|reflect|steal[^.]*enemy|reduce opponent|lower enemy|cut target|enemy loses|opponent loses|poison|burn|bleed|freeze target|frostbite|stun|confusion|double atk|gain[^.]*atk|gain[^.]*damage|boost damage|boost stats|increase damage|increase stats|attacks? convert|kill|defeat|doom|assassinate|lifesteal|current hp|max hp damage|instant(?:ly)? defeated)/i.test(t);
     const supportOnly=SUPPORT_ABILITIES.has(ability) && !/(damage|attack|enemy|opponent|kill|defeat)/i.test(t);
     if(offensive&&!supportOnly)out.add('Attack');
     return [...out];
