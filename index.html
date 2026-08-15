@@ -67,14 +67,16 @@
 
   function categoriesFor(card){
     const out=new Set(),t=textFor(card),ability=card.ability||'';
+    const isSuperAttack=SUPER_ATTACK.has(card.name);
+    const isSuperSupport=SUPER_SUPPORT.has(card.name);
     if(SPEEDRUN_ABILITIES.has(ability))out.add('Speedrun / AOE');
-    if(SUPPORT_ABILITIES.has(ability))out.add('Support');
-    if(SUPER_ATTACK.has(card.name))out.add('SUPER GOOD Attack');
-    if(SUPER_SUPPORT.has(card.name))out.add('SUPER GOOD Support');
+    if(SUPPORT_ABILITIES.has(ability) && !isSuperSupport)out.add('Support');
+    if(isSuperAttack)out.add('SUPER GOOD Attack');
+    if(isSuperSupport)out.add('SUPER GOOD Support');
     if(CHEESE.has(card.name))out.add('Cheese');
     const offensive=/(deal(?:s|ing)?[^.]*damage|attack(?:s|ing)? (?:the|enemy|again|on entry|twice|alongside)|attacker takes damage|counterattack|reflect|steal[^.]*enemy|reduce opponent|lower enemy|cut target|enemy loses|opponent loses|poison|burn|bleed|freeze target|frostbite|stun|confusion|double atk|gain[^.]*atk|gain[^.]*damage|boost damage|boost stats|increase damage|increase stats|attacks? convert|kill|defeat|doom|assassinate|lifesteal|current hp|max hp damage|instant(?:ly)? defeated)/i.test(t);
     const supportOnly=SUPPORT_ABILITIES.has(ability) && !/(damage|attack|enemy|opponent|kill|defeat)/i.test(t);
-    if(offensive&&!supportOnly)out.add('Attack');
+    if(offensive&&!supportOnly&&!isSuperAttack)out.add('Attack');
     return [...out];
   }
 
