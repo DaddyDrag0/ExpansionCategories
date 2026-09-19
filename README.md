@@ -1,1 +1,2 @@
-Base
+# ExpansionCategories
+Categories for card rng expansion 
